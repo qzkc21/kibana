@@ -77,18 +77,20 @@ uiModules
         }
       });
 
-      const stateMonitor = stateMonitorFactory.create($scope.appState);
-      if ($scope.vis.type.requiresSearch) {
-        stateMonitor.onChange((status, type, keys) => {
-          if (['query', 'filters', 'vis'].includes(keys[0])) {
-            if ($scope.appState.vis) $scope.vis.setState($scope.appState.vis);
-            $scope.fetch();
-          }
-        });
-
-        // visualize needs to know about timeFilter
-        $scope.$listen(timefilter, 'fetch', $scope.fetch);
+      if ($scope.appState) {
+        const stateMonitor = stateMonitorFactory.create($scope.appState);
+        if ($scope.vis.type.requiresSearch) {
+          stateMonitor.onChange((status, type, keys) => {
+            if (['query', 'filters', 'vis'].includes(keys[0])) {
+              if ($scope.appState.vis) $scope.vis.setState($scope.appState.vis);
+              $scope.fetch();
+            }
+          });
+        }
       }
+
+      // visualize needs to know about timeFilter
+      $scope.$listen(timefilter, 'fetch', $scope.fetch);
 
       $scope.fetch();
     }
